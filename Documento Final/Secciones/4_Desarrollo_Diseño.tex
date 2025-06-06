@@ -1,0 +1,49 @@
+\section{Diseño y especificaciones}
+
+\subsection{Definición del problema}
+El proyecto de investigación actual surge de una oportunidad significativa de optimización de recursos computacionales en la Universidad de los Andes. El problema central radica en la sistemática subutilización de la infraestructura computacional de alto rendimiento en entornos académicos, como la sala Waira y laboratorios similares. A pesar de que estas estaciones de trabajo están equipadas con procesadores Intel i7-7700 (8 núcleos, 3.60GHz), 32GB de memoria RAM DDR4 y capacidades de virtualización nativa, operando aproximadamente 14 horas al día, su potencial se desaprovecha. Actualmente, estos recursos se utilizan predominantemente para tareas de baja demanda, como navegación web y procesamiento de texto, en lugar de aplicaciones de mayor complejidad.
+
+Esta infrautilización coexiste con una demanda creciente y no satisfecha de recursos computacionales avanzados para la investigación académica en diversas disciplinas. Proyectos universitarios previos, que incluyen simulaciones biomoleculares, análisis estructural en ingeniería civil y desarrollo de modelos de aprendizaje automático, han requerido una capacidad de procesamiento considerable. La ausencia de un mecanismo eficiente para democratizar el acceso a estos recursos de alto rendimiento limita a investigadores de todos los niveles, desde pregrado hasta doctorado, impidiendo la ejecución óptima de sus proyectos y, en consecuencia, frenando el avance de la investigación y la innovación en la institución.
+
+\subsection{Especificaciones}
+Para abordar el problema identificado, el proyecto UnaCloud establecerá requerimientos precisos, clasificados en funcionales y no funcionales, que guiarán su desarrollo e implementación.
+
+\subsubsection{Requerimientos Funcionales}
+\begin{itemize}
+    \item Orquestación de Tareas HPC: El sistema debe ser capaz de orquestar y agendar tareas de computación de alto rendimiento (HPC) utilizando Slurm, replicando las funcionalidades del clúster Hypatia de la Universidad de los Andes.
+    \item Provisión de Máquinas Virtuales Concurrentes: El sistema debe permitir la implementación y ejecución de máquinas virtuales concurrentes sobre la infraestructura de hardware existente.
+    \item Acceso Remoto Eficiente: El sistema debe facilitar el acceso remoto eficiente a los recursos computacionales aprovisionado, utilizando la infraestructura de red existente.
+    \item Campo de Pruebas HPC: La plataforma resultante debe servir como un campo de pruebas en HPC, utilizable como alternativa al clúster Hypatia de la Universidad de los Andes cuando este no esté disponible o su uso no sea prudente.
+\end{itemize}
+
+\subsubsection{Atributos de calidad}
+\begin{itemize}
+    \item No Intrusividad para Usuarios Primarios: El sistema debe garantizar que la utilización de recursos excedentes no afecte la experiencia de los usuarios primarios de las estaciones de trabajo (estudiantes de pregrado). Esto implica que las tareas de HPC solo deben consumir recursos cuando las estaciones estén ociosas o con baja demanda.
+    \item Utilización de Recursos: El sistema debe lograr un aumento significativo en la tasa de utilización de CPU, memoria y disco de las estaciones de trabajo subutilizadas.
+    \item Latencia: La latencia en el acceso y la ejecución de tareas de HPC debe ser minimizada para asegurar una experiencia de usuario fluida para los investigadores
+    \item Rendimiento: El sistema debe permitir un aumento en el número de tareas de investigación que pueden ser procesadas concurrentemente.
+    \item Escalabilidad: La arquitectura del sistema debe ser escalable para acomodar un número creciente de usuarios y demandas de recursos computacionales a medida que la investigación académica en la universidad evolucione.
+    \item Metodología de Construcción: El proyecto se construirá sobre la base de la integración de los proyectos UnaCloud y QuickCloud, y el uso de Slurm como gestor de cargas de trabajo principal, replicando el diseño y funcionamiento del clúster Hypatia.
+    \item Facilidad de Uso: La interfaz para los investigadores que solicitan recursos y envían tareas debe ser intuitiva y fácil de usar, fomentando la adopción del sistema.
+    \item Seguridad: El sistema debe implementar medidas de seguridad robustas para controlar el acceso a usuarios permitidos y no permitidos, proteger los datos de investigación, garantizar la integridad y privacidad de la información procesada en el entorno compartido. 
+\end{itemize}
+\subsection{Alcance}
+\subsubsection{Casos de Uso}
+\begin{itemize}
+    \item Un miembro de la comunidad universitaria podrá ingresar a la plataforma UnaCloud por medio de una pagina web, solicitar un usuario en el clúster UnaCloud y con ese usuario ingresar al nodo de manejo Linux y entregar un script para ejecutar un trabajo que haga uso de la infraestructura HPC.
+    \item Un usuario podrá recibir un correo electrónico informándole el estado de el trabajo que pidió se ejecutara en el clúster; ya sea porque termino con éxito, ocurrió un error o cualquier otro cambio de estado pertinente.
+    \item Un usuario podrá guardar los resultados de los trabajos que pidió ejecutar en su directorio home ubicado en el nodo de manejo.
+    \item Un administrador pude añadir mas nodos al sistema ingresando a el nodo controlador directamente y luego enviando un comando de ssh a la maquina host nueva con VirtualBox instalado.
+    \item Un administrador puede ingresar al nodo controlador a través del portal web y monitorear el estado del los nodos y realizar acciones de mantenimiento.
+\subsubsection{Excepciones}
+    \item El usuario no podrá entregar script que requieran memoria compartida entre nodos.
+    \item El usuario no podrá acceder directamente a un nodo diferente al nodo de manejo.
+    \item El usuario no iniciar trabajos que requieran una cantidad de memoria superior a la estipulada en la pagina web, si el trabajo necesita mas que este numero su trabajo sera abortado y el usuario ser informado
+    \item El usuario no puede exigir desempeños comparables con otros clústeres HPC, este proyecto tiene como propósito ser una herramienta de exploración para el HPC.
+\end{itemize}
+\subsection{Restricciones}
+En el contexto de la computación de alto rendimiento el estándar es utilizar conexiones de alta velocidad como fibra optica o InfiniBand entre los nodos para reducir latencia en la comunicación. En nuestro caso es imposible utilizar estas conexiones porque estamos usando la infraestructura de comunicaciones subyacente, la cual consta de cables RJ45 de cobre. Debido a esto no esperamos tener el mismo nivel de desemperno que tendría un clúster normalmente.\\
+\\
+Otra limitación es el hecho de que los host de los nodos no están dedicados al clúster si no que mas bien estamos aprovechando recursos subutilizados, esto significa que los nodos individualmente no son tan capaces como en otros clústeres.
+
+

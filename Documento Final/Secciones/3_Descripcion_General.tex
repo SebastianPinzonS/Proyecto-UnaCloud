@@ -1,0 +1,22 @@
+\section{Descripción General}
+
+\subsection{Objetivos}
+Reactivar la plataforma UnaCloud con el objetivo principal de implementar funcionalidades de Computación de Alto Rendimiento (HPC) para maximizar el aprovechamiento de los recursos computacionales subutilizados en la sala Waira de la Universidad de los Andes. Para ello, se desarrollará una interfaz gráfica intuitiva que simplifique la orquestación de tareas de HPC, beneficiando así a investigadores y administradores del sistema.
+
+\subsection{Antecedentes}
+La optimización de recursos computacionales, especialmente en entornos donde la infraestructura se encuentra infrautilizada, ha sido un campo de investigación activo, con diversas estrategias y modelos desarrollados para abordar este desafío en instituciones académicas. 
+
+Por un lado, se encuentran las investigaciones de las estrategias de cosecha de recursos ociosos. Esta es un área de investigación que se alinea directamente con el objetivo de UnaCloud. Un avance notable y reciente en este ámbito es Freyr+, un gestor de recursos diseñado para recolectar dinámicamente recursos inactivos de funciones sobre-aprovisionadas y acelerar aquellas sub-aprovisionadas, particularmente en plataformas de computación sin servidor (Yu et al., 2024). Freyr+ opera mediante el monitoreo continuo de la utilización de recursos en tiempo real, identificando discrepancias entre la configuración establecida por el usuario y el consumo real. Incorpora algoritmos de aprendizaje por refuerzo profundo con mecanismos de atención mejorada, aprendizaje incremental y salvaguardias para asegurar una recolección segura de recursos ociosos y una aceleración eficiente de las funciones (Yu et al., 2024).
+
+Los resultados experimentales, obtenidos en un clúster Apache OpenWhisk de 13 nodos utilizando AWS EC2, demostraron mejoras significativas: Freyr+ logró cosechar el 38\% de los recursos inactivos de las invocaciones de funciones y aceleró el 39\% de las invocaciones utilizando estos recursos recuperados, reduciendo la latencia de respuesta de las funciones en el percentil 99 en un 26\% en comparación con los gestores de recursos de referencia (Yu et al., 2024). Estos resultados demuestran el considerable potencial de la gestión inteligente y dinámica de recursos.
+
+
+Por otra parte, se evidencio la tendencia a transicionar de laboratorios físicos a entornos virtualizados. Esta tendencia en la educación superior, es impulsada por la necesidad de mayor accesibilidad, escalabilidad y eficiencia de costos.
+
+Como respuesta a esta necesidad se presenta el modelo "Social Cloud" como un ecosistema diseñado para la implementación de laboratorios de computación virtuales en universidades, con el fin de impartir habilidades prácticas en Tecnologías de la Información (TI) (Encalada & Sequera, 2017). Este modelo aprovecha los servicios de computación en la nube: Software como Servicio (SaaS) para el trabajo colaborativo, Plataforma como Servicio (PaaS) para la entrega de contenido y evaluación, e Infraestructura como Servicio (IaaS) utilizando Infraestructura de Escritorio Virtual (VDI) como Open Universal Desktop Services (OpenUDS) para proporcionar máquinas virtuales con software preinstalado para la capacitación práctica (Encalada & Sequera, 2017). 
+
+Entre sus beneficios se incluyen la centralidad, facilidad de uso, escalabilidad, ubicuidad y un entorno de aprendizaje superior en comparación con los laboratorios físicos (Encalada & Sequera, 2017). Aborda desafíos como las horas limitadas de laboratorio, los altos costos y la complejidad de integrar nuevas tecnologías, al hacer que la infraestructura sea transparente y escalable para los usuarios (Encalada & Sequera, 2017). 
+
+\subsection{Proposito}
+
+El propósito del clúster UnaCloud es proveer una herramienta a la comunidad universitaria de la Universidad de los Andes y potencialmente externa para que exploren las capacidades y funcionamiento de un clúster HPC. Mediante la utilización de recursos subutilizados de las salas de computo de la universidad buscamos dar a conocer las capacidades investigativas que un clúster como Hypatia tienen sin exponer este servicio a sobrecargas. Ademas de proveer esta funcionalidad queremos instigar a otros estudiante a que exploren las capacidades y oportunidades que el mundo de la computación paralela exponen. Existen muchas mas aplicaciones para la infraestructura subyacente de computación oportunista que implementa UnaCloud, diferentes de HPC.

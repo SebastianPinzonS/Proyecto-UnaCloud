@@ -1,0 +1,22 @@
+\section{Implementación}
+\subsubsection{Aprovisionamiento}
+La implementación comienza con el aprovisionamiento de nodos. Para los nodos de computo se instala VirtualBox en las maquinas del laboratorio Waira. Esta aplicación nos permite iniciar maquinas virtuales desde la linea de comandos, esto facilita crearlas en un estado \textit{headless} el cual no es percibido por el usuario de la maquina. Para iniciar esta maquina virtual se sube una imagen de Linux distribución Debian, la cual esta especificada para funcionar como nodo de computo con una cantidad mínima de sobrecarga.
+\\
+\\
+Luego en una maquina Windows del centro de datos se instala tambien VirtualBox. En este caso la imagen Linux Debian esta especificada para funcionar como el nodo de control. Este nodo conoce a todos los nodos de computo y es el encargado de distribuir las tareas y manejar la cola.
+
+\subsubsection{Conexión y Autenticación}
+Para que el nodo controlador pueda manejar los otros nodos existen dos requerimientos. El controlador debe conocer las direcciones IP de los nodos de computo, así mismo los nodos de computo deben conocer la dirección del controlador. Ademas todos los nodos deben contener una llave Munge compartida para poder autenticarse entre ellos.
+
+\subsubsection{Configuración}
+Debido a que se utiliza el programa Slurm para orquestar la paralelización todos los nodos deben contener un archivo de configuración del programa. Es importante que todos los nodos tengan el mismo archivo ya que en este se detalla el rol de cada nodo y cuentos recursos computacionales estarán disponibles, ademas de otras opciones de configuración.
+
+\subsubsection{Manejo}
+Después de tener las configuraciones del clúster es esencial hacer operaciones de manejo sobre los nodos. Es importante iniciar los nodos y dejarlos en un estado disponible.
+
+\subsubsection{Entorno}
+Finalmente se establecen los permisos que tendrán Slurm y los usuarios finales sobre los recursos de los nodos. Ademas se implementa un manejador de dependencias para que si los usuarios necesitan un programa en particular para realizar sus trabajos tengan acceso a este.
+
+
+\subsection{Resultados esperados}
+Describir y justificar las formas de implementar modelos y soluciones, así como las herramientas empleadas. Evaluar la precisión del desempeño esperado considerando el efecto de soluciones aproximadas y errores de medición esperados.
