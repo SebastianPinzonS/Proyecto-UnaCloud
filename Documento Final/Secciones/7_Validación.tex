@@ -1,7 +1,48 @@
 \section{Validación}
 
 \subsection{Métodos}
-Describir qué pruebas de validación fueron realizadas para evaluar que los resultados satisficieran las especificaciones (de manera concisa, cuantitativa y precisa). Explique las razones para cada prueba y su significancia, así como el protocolo para ella. Documenteestos pasos para permitir la reproducción de las pruebas.
+La validación de la plataforma UnaCloud se realizó mediante un conjunto de pruebas funcionales y de sistema, diseñadas para verificar que todos los requerimientos y casos de uso definidos en la sección de especificaciones fueran cumplidos satisfactoriamente. El objetivo de esta metodología es asegurar que la plataforma no solo sea funcional, sino también robusta y fácil de usar para sus roles de usuario definidos. La estrategia de validación se dividió en tres protocolos principales:
+
+\subsubsection{Protocolo de Validación de Gestión de Cuentas:}
+Este protocolo se diseñó para verificar el ciclo completo de creación e inicio de sesión de un usuario, que es el punto de entrada fundamental al sistema. La prueba confirma que el registro en la web aprovisiona correctamente las credenciales. Los pasos ejecutados, fueron:
+
+\begin{itemize}
+    \item Acceso al Registro: Navegar a la página de registro y completar el formulario con los datos de un nuevo usuario.
+    \item Confirmación: Verificar que, tras el registro, el sistema redirige a la página de inicio de sesión y muestra un mensaje de éxito.
+    \item Inicio de Sesión: Ingresar las credenciales recién creadas en el formulario de login.
+    \item Verificación de Acceso: Confirmar que el inicio de sesión es exitoso y que el usuario es dirigido a la página principal de la interfaz de UnaCloud.
+\end{itemize}
+
+\subsubsection{Protocolo de Validación del Flujo de Usuario:}
+
+Este protocolo se diseñó para simular las interacciones de un usuario real con la plataforma, cubriendo el ciclo de vida completo de un trabajo de investigación. La razón de esta prueba es demostrar que la integración de todos los componentes del sistema (interfaz web, terminal, gestor de archivos y Slurm) funciona de manera cohesiva. Los pasos ejecutados, documentados en el Apéndice, fueron los siguientes:
+
+\begin{itemize}
+    \item Preparación: Un usuario se autentica y accede a la terminal web para verificar que su directorio de trabajo inicial está vacío.
+    \item Envío de la Tarea: Se utiliza la funcionalidad web para cargar un script de prueba Posteriormente, desde la terminal integrada, se envía este script al clúster mediante el comando sbatch.
+    \item Monitoreo y Finalización: Se verifica en la terminal la correcta recepción del trabajo por parte de Slurm y se espera su finalización, revisando los archivos de salida generados.
+    \item Recuperación de Resultados: Los archivos de salida se mueven al directorio de exportación a través de la terminal. Inmediatamente después, se utiliza el botón "Listar Archivos" en la interfaz web para confirmar su disponibilidad y se procede a su descarga.
+\end{itemize}
+
+\subsubsection{Protocolo de Validación de la Gestión de Infraestructura:}
+Este conjunto de pruebas se centró en validar las capacidades de monitoreo y gestión del clúster disponibles en la página "Estado de Nodos". La significancia de estas pruebas radica en que confirman el control centralizado sobre la infraestructura virtual, una de las funcionalidades clave del proyecto. El protocolo, evidenciado en el Apéndice, consistió en:
+
+\begin{itemize}
+    \item Inspección y Monitoreo: Se accedió a la página para verificar que el estado de todos los nodos del clúster se mostraba correctamente.
+    \item Orquestación de Nodos: Se seleccionó una partición específica (ej. "Q4*") y se utilizó el botón "Apagar VMs". Tras recibir la notificación de éxito, se recargó el estado para confirmar visualmente que los nodos correspondientes aparecían como down*. El proceso se repitió utilizando el botón "Iniciar VMs" para verificar que los nodos volvían al estado idle.
+    \item Mantenimiento: Se ejecutó la función "Reparar Nodos" para validar que el comando de reinicio de servicios se enviaba correctamente al backend del clúster.
+\end{itemize}
 
 \subsection{Validación de resultados}
-Presentar los resultados de las validaciones (verificación, testing)  mediante herramientas apropiadas (lógica, estadística, gráficas, tablas, etc.). Incluir datos completos y resultados intermedios. Identificar y cuantificar posibles fuentes de errores de medición.
+\subsubsection{Capacidades de Usuario}
+\begin{itemize}
+    \item \textbf{Crear Cuenta de Usuario:} Un usuario sin cuenta en UnaCloud puede visitar la sección de registro para crear una cuenta con su correo. Esto también le crea un usuario de Linux en el clúster. Como se puede ver en la figura \ref{fig:SignUp}
+    \item \textbf{Iniciar Sesión:} Un usuario que tienen cuenta puede iniciar sesión en UnaCloud como se puede ver en la figura \ref{fig:LogIn}. 
+    \item \textbf{Inspeccionar Estado de Nodos:} Un usuario puede ver si los nodos están disponibles en el clúster y su estado particular como se puede ver en la figura \ref{fig:NodeState}.
+    \item \textbf{Cambiar Estado de Nodos:} Un usuario puede encender los nodos de una cola y puede usar la acción de reparar para que estén disponibles en el clúster como se puede ver en la figura \ref{fig:UCRepair}.
+    \item \textbf{Subir Archivo:} Un usuario puede cargar un archivo desde su computador a el clúster y correrlo en un tarea, como se puede ver en las figuras \ref{fig:LogedIn}, \ref{fig:EmptyUpload} y \ref{fig:RunningTask}.
+    \item \textbf{Descargar Archivo}
+    Un usuario puede descargar un archivo desde el clúster a su maquina, en este caso resultados de tareas ejecutadas. Se puede ver evidencia en la figura \ref{fig:ExportResults} y \ref{fig:ExportSuccesfully}.
+    \item \textbf{Acceder a la Terminal:}Un usuario puede acceder a la terminal del nodo controlador para hacer uso de los servicios del clúster. Es desde este punto que se encolan todas las tareas que ejecutara Slurm.
+    \item \textbf{Hacer Uso de Slurm:} Un usuario puede hacer uso de las el clúster a través de la herramienta Slurm en la cual podrán ejecutar programas con paralelización mediante scripts. Se evidencia en las figuras \ref{fig:RunningTask} y \ref{fig:TaskComplete}
+\end{itemize} 

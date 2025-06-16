@@ -30,20 +30,69 @@ Para abordar el problema identificado, el proyecto UnaCloud establecerá requeri
 \subsection{Alcance}
 \subsubsection{Casos de Uso}
 \begin{itemize}
-    \item Un miembro de la comunidad universitaria podrá ingresar a la plataforma UnaCloud por medio de una pagina web, solicitar un usuario en el clúster UnaCloud y con ese usuario ingresar al nodo de manejo Linux y entregar un script para ejecutar un trabajo que haga uso de la infraestructura HPC.
-    \item Un usuario podrá recibir un correo electrónico informándole el estado de el trabajo que pidió se ejecutara en el clúster; ya sea porque termino con éxito, ocurrió un error o cualquier otro cambio de estado pertinente.
+    \item Un miembro de la comunidad universitaria podrá ingresar a la plataforma UnaCloud por medio de una página web, solicitar un usuario en el clúster UnaCloud y con ese usuario ingresar al nodo de manejo Linux y entregar un script para ejecutar un trabajo que haga uso de la infraestructura HPC.
+    \item Un usuario podrá recibir un correo electrónico informándole el estado del trabajo que pidió se ejecutara en el clúster; ya sea porque termino con éxito, ocurrió un error o cualquier otro cambio de estado pertinente.
     \item Un usuario podrá guardar los resultados de los trabajos que pidió ejecutar en su directorio home ubicado en el nodo de manejo.
-    \item Un administrador pude añadir mas nodos al sistema ingresando a el nodo controlador directamente y luego enviando un comando de ssh a la maquina host nueva con VirtualBox instalado.
-    \item Un administrador puede ingresar al nodo controlador a través del portal web y monitorear el estado del los nodos y realizar acciones de mantenimiento.
+    \item Un administrador pude añadir más nodos al sistema ingresando a el nodo controlador directamente y luego enviando un comando de ssh a la maquina host nueva con VirtualBox instalado.
+    \item Un administrador puede ingresar al nodo controlador a través del portal web y monitorear el estado de los nodos y realizar acciones de mantenimiento.
 \subsubsection{Excepciones}
     \item El usuario no podrá entregar script que requieran memoria compartida entre nodos.
     \item El usuario no podrá acceder directamente a un nodo diferente al nodo de manejo.
-    \item El usuario no iniciar trabajos que requieran una cantidad de memoria superior a la estipulada en la pagina web, si el trabajo necesita mas que este numero su trabajo sera abortado y el usuario ser informado
+    \item El usuario no iniciar trabajos que requieran una cantidad de memoria superior a la estipulada en la página web, si el trabajo necesita más que este número su trabajo será abortado y el usuario ser informado
     \item El usuario no puede exigir desempeños comparables con otros clústeres HPC, este proyecto tiene como propósito ser una herramienta de exploración para el HPC.
 \end{itemize}
 \subsection{Restricciones}
-En el contexto de la computación de alto rendimiento el estándar es utilizar conexiones de alta velocidad como fibra optica o InfiniBand entre los nodos para reducir latencia en la comunicación. En nuestro caso es imposible utilizar estas conexiones porque estamos usando la infraestructura de comunicaciones subyacente, la cual consta de cables RJ45 de cobre. Debido a esto no esperamos tener el mismo nivel de desemperno que tendría un clúster normalmente.\\
+En el contexto de la computación de alto rendimiento el estándar es utilizar conexiones de alta velocidad como fibra óptica o InfiniBand entre los nodos para reducir latencia en la comunicación. En nuestro caso es imposible utilizar estas conexiones porque estamos usando la infraestructura de comunicaciones subyacente, la cual consta de cables RJ45 de cobre. Debido a esto no esperamos tener el mismo nivel de desemperno que tendría un clúster normalmente.\\
 \\
-Otra limitación es el hecho de que los host de los nodos no están dedicados al clúster si no que mas bien estamos aprovechando recursos subutilizados, esto significa que los nodos individualmente no son tan capaces como en otros clústeres.
+Otra limitación es el hecho de que los hosts de los nodos no están dedicados al clúster si no que más bien estamos aprovechando recursos subutilizados, esto significa que los nodos individualmente no son tan capaces como en otros clústeres.
 
+\subsection{Arquitectura Detallada del Sistema}
+El sistema HPC UnaCloud se compone de tanto elementos físicos como virtuales.
+\begin{itemize}
+    \item Físicos
+    \begin{itemize}
+        \item \textbf{Servidor de manejo/web:} Esta máquina física con mínimo 12Gb de memoria RAM y 100Gb de almacenamiento se encargará de 3 tareas. Hospedar el servidor el web el cual permite ingresar al clúster a ambos tipos de usuarios a través de un navegador. También hospedará el servidor de control el cual se encargará de iniciar las máquinas virtuales que corresponden a los nodos de cómputo, están hospedadas en las estaciones de trabajo. Finalmente hospedara el nodo de control.
+        \item \textbf{Estaciones de trabajo:} Maquinas del laboratorio Waira, estas serán los anfitriones de los nodos de computo
+        \item \textbf{Anfitrión de NFS:} Maquina muy simple usada como sistema de archivos remoto o NFS (Network File System) para almacenar los datos de los usuarios, todos los nodos tendrán un punto de montaje (mount point) en esta máquina para poder acceder a la misma información.
+    \end{itemize}
+    \item Virtuales
+    \begin{itemize}
+        \item \textbf{Nodo cabeza:} Maquina Debian que contiene el daemon slurmctld el cual se encarga de monitorear los nodos de cómputo. Además, se encarga de manejar la cola de trabajos alocando los recursos del clúster. También de da acceso de alto nivel al clúster al usuario administrador.
+        \item \textbf{Nodo de cómputo:} Maquina Debian que contiene el daemon slurmd el cual se encarga de recibir instrucciones del nodo cabeza y ejecutarlas.
+        \item \textbf{Servidor de manejo:} Servidor encargado de enviar comandos de Virtual Box a las estaciones de trabajo para que se inicien los nodos de cómputo. Además, también envía comandos al nodo cabeza para reactivar el estado de los nodos de
+        computo.
+        \item \textbf{Servidor web:} Aplicación front end que permite a los usuarios tener una sesión de SSH con el nodo cabeza, así como enviar archivos a este a traves de SFTP.
+    \end{itemize}
+\end{itemize}
+\subsection{Información Detallada de Usuarios}
+El sistema presenta dos roles de usuario con permisos y funcionalidades claramente diferenciados. La gestión se realiza a través de una base de datos interna y sesiones de aplicación seguras para controlar el acceso.
+\begin{itemize}
+    \item \textbf{Usuario (Investigador):} 
+    \begin{itemize}
+        \item \textbf{Registro y Acceso:} Cualquier miembro de la comunidad puede registrarse en la plataforma a través de un formulario web.  Durante el registro, el sistema crea automáticamente un usuario correspondiente en el servidor Linux, utilizando la parte del correo electrónico anterior al '@' como nombre de usuario. La contraseña definida es válida tanto para la plataforma web como para el acceso por terminal al nodo cabeza.
+        \item \textbf{Funcionalidades Principales:} Una vez autenticado, el investigador puede:
+        \begin{itemize}
+            \item \textbf{Transferir Archivos de Trabajo:} A través de la interfaz web, puede cargar los scripts o programas que desea ejecutar en el clúster.  Estos archivos se transfieren de forma segura a su directorio personal en el servidor ($/home/<user\_name>/uploads$) mediante SFTP.
+            \item \textbf{Ejecutar Trabajos HPC:} Utilizando la terminal interactiva integrada en el portal web, el usuario inicia una sesión SSH en el nodo cabeza con sus credenciales. Desde allí, puede utilizar comandos estándar de Slurm como sbatch para enviar sus programas a la cola de procesamiento del clúster.
+            \item \textbf{Gestionar Resultados:} Al finalizar un trabajo, los resultados se guardan en el directorio home del usuario. Posteriormente, puede listar y descargar estos archivos a su máquina local desde la sección "Descargar Archivos de Exportación" de la interfaz.
+            \item \textbf{Visualización y Habilitación de Nodos del Clúster:} El usuario tiene acceso a la página "Estado de Nodos", que presenta una vista gráfica y en tiempo real del estado de todos los nodos de cómputo obtenida directamente desde Slurm. A sí mismo, puede encender los nodos de la cola que requiera, una vez acabada su tarea puede apagar los mismos.
+        \end{itemize}
+    \end{itemize}
 
+    \item \textbf{Administrador:} 
+    \begin{itemize}
+        \item \textbf{Acceso y Permisos Elevados:} El administrador posee todos los permisos del rol de investigador y, adicionalmente, tiene acceso a funcionalidades críticas para la gestión del clúster. En la terminal del nodo cabeza, puede escalar sus privilegios mediante el comando sudo para realizar tareas de sistema.
+        \item \textbf{Funcionalidades de Gestión y Monitoreo:}
+        \begin{itemize}
+            \item \textbf{Visualización del Clúster:} El administrador tiene acceso a la página "Estado de Nodos", que presenta una vista gráfica y en tiempo real del estado de todos los nodos de cómputo obtenida directamente desde Slurm. 
+            \item \textbf{Orquestación de Infraestructura Virtual:} Desde la misma interfaz, puede iniciar o apagar remotamente las máquinas virtuales de los nodos de cómputo, seleccionando particiones enteras para gestionar la disponibilidad de recursos.
+            \item \textbf{Mantenimiento del Sistema:} Puede realizar tareas de mantenimiento directamente desde el portal web, como ejecutar el comando para reparar y reiniciar los servicios de Slurm en los nodos. Alternativamente, puede usar la terminal web para conectarse por SSH a los nodos y utilizar comandos de control como scontrol para una gestión más granular.
+        \end{itemize}
+        \item \textbf{Procedimiento para Añadir un Nuevo Nodo:} El administrador es el único capaz de expandir el clúster. El proceso es el siguiente:
+        \begin{itemize}
+            \item \textbf{Registro en la Base de Datos:} Se debe agregar una entrada en la base de datos del servidor de manejo con la dirección IP de la nueva estación de trabajo anfitriona, las credenciales y el nombre de la máquina virtual que albergará.
+            \item \textbf{Despliegue de la Imagen:} En la estación de trabajo física, se debe descargar y configurar la imagen predefinida de Debian para los nodos de cómputo.
+            \item \textbf{Configuración de Red y Slurm:} La IP del nuevo nodo debe ser añadida al archivo /etc/hosts de todos los demás nodos para asegurar la comunicación.  Finalmente, se debe modificar el archivo de configuración slurm.conf en todos los nodos para incluir el nuevo nodo en su partición correspondiente.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}

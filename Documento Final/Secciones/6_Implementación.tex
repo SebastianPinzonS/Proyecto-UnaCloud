@@ -1,22 +1,33 @@
 \section{Implementación}
 \subsubsection{Aprovisionamiento}
-La implementación comienza con el aprovisionamiento de nodos. Para los nodos de computo se instala VirtualBox en las maquinas del laboratorio Waira. Esta aplicación nos permite iniciar maquinas virtuales desde la linea de comandos, esto facilita crearlas en un estado \textit{headless} el cual no es percibido por el usuario de la maquina. Para iniciar esta maquina virtual se sube una imagen de Linux distribución Debian, la cual esta especificada para funcionar como nodo de computo con una cantidad mínima de sobrecarga.
+La implementación comienza con el aprovisionamiento de nodos. Para los nodos de cómputo se instala VirtualBox en las maquinas del laboratorio Waira. Esta aplicación nos permite iniciar máquinas virtuales desde la línea de comandos, esto facilita crearlas en un estado \textit{headless} el cual no es percibido por el usuario de la máquina. Para iniciar esta máquina virtual se sube una imagen de Linux distribución Debian, la cual esta especificada para funcionar como nodo de cómputo con una cantidad mínima de sobrecarga.
 \\
 \\
-Luego en una maquina Windows del centro de datos se instala tambien VirtualBox. En este caso la imagen Linux Debian esta especificada para funcionar como el nodo de control. Este nodo conoce a todos los nodos de computo y es el encargado de distribuir las tareas y manejar la cola.
+Luego en una maquina Windows del centro de datos se instala también VirtualBox. En este caso la imagen Linux Debian esta especificada para funcionar como el nodo de control. Este nodo conoce a todos los nodos de cómputo y es el encargado de distribuir las tareas y manejar la cola.
 
 \subsubsection{Conexión y Autenticación}
-Para que el nodo controlador pueda manejar los otros nodos existen dos requerimientos. El controlador debe conocer las direcciones IP de los nodos de computo, así mismo los nodos de computo deben conocer la dirección del controlador. Ademas todos los nodos deben contener una llave Munge compartida para poder autenticarse entre ellos.
+Para que el nodo controlador pueda manejar los otros nodos existen dos requerimientos. El controlador debe conocer las direcciones IP de los nodos de cómputo, así mismo los nodos de cómputo deben conocer la dirección del controlador. Además, todos los nodos deben contener una llave Munge compartida para poder autenticarse entre ellos.
 
 \subsubsection{Configuración}
-Debido a que se utiliza el programa Slurm para orquestar la paralelización todos los nodos deben contener un archivo de configuración del programa. Es importante que todos los nodos tengan el mismo archivo ya que en este se detalla el rol de cada nodo y cuentos recursos computacionales estarán disponibles, ademas de otras opciones de configuración.
+Debido a que se utiliza el programa Slurm para orquestar la paralelización todos los nodos deben contener un archivo de configuración del programa. Es importante que todos los nodos tengan el mismo archivo ya que en este se detalla el rol de cada nodo y cuentos recursos computacionales estarán disponibles, además de otras opciones de configuración.
 
 \subsubsection{Manejo}
 Después de tener las configuraciones del clúster es esencial hacer operaciones de manejo sobre los nodos. Es importante iniciar los nodos y dejarlos en un estado disponible.
 
 \subsubsection{Entorno}
-Finalmente se establecen los permisos que tendrán Slurm y los usuarios finales sobre los recursos de los nodos. Ademas se implementa un manejador de dependencias para que si los usuarios necesitan un programa en particular para realizar sus trabajos tengan acceso a este.
+Finalmente se establecen los permisos que tendrán Slurm y los usuarios finales sobre los recursos de los nodos. Además, se implementa un manejador de dependencias para que si los usuarios necesitan un programa en particular para realizar sus trabajos tengan acceso a este.
 
 
 \subsection{Resultados esperados}
-Describir y justificar las formas de implementar modelos y soluciones, así como las herramientas empleadas. Evaluar la precisión del desempeño esperado considerando el efecto de soluciones aproximadas y errores de medición esperados.
+Se espera que la implementación del proyecto UnaCloud culmine en una plataforma web completamente funcional, que sirva como una prueba de concepto robusta para la computación oportunista en un entorno académico. Los resultados esperados se centran en las siguientes áreas clave:
+
+\begin{itemize}
+    \item Funcionalidad de la Plataforma: Se anticipa la entrega de un portal web operativo, con un backend desarrollado en Go, capaz de gestionar la autenticación de usuarios y sus roles. Se espera que la interfaz sea intuitiva y permita a los usuarios acceder a todas las funcionalidades del clúster de manera centralizada.
+    
+    \item Orquestación de Infraestructura HPC: Se espera que el sistema sea capaz de orquestar de manera remota un clúster de Slurm. Esto incluye la habilidad de iniciar y detener las máquinas virtuales que actúan como nodos de cómputo en las estaciones de trabajo Windows, y que estas se integren correctamente al clúster para recibir trabajos.
+    
+    \item Validación del Flujo de Trabajo del Investigador: Se proyecta que un usuario investigador podrá completar el ciclo de vida de un trabajo HPC sin inconvenientes: desde el registro en la plataforma y la carga de sus scripts, hasta la sumisión del trabajo a Slurm a través de la terminal web y la posterior descarga de los archivos de resultados.
+    
+    \item Capacidades de Gestión: Se espera que la interfaz provea una visualización clara del estado de los nodos del clúster. Además, deberá contar con los controles necesarios para que un usuario autenticado pueda realizar tareas de gestión, como la reparación y el reinicio de los nodos.
+\end{itemize}
+
